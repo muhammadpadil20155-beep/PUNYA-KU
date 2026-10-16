@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Secretly Tools</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--pink:#ff3d81;--glass:rgba(255,255,255,.08);--line:rgba(255,255,255,.18);--txt:#fff;--mut:rgba(255,255,255,.7)}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%}
+body{font-family:Manrope,system-ui,sans-serif;color:var(--txt);background:#12060a;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+#bg{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2}
+.shade{position:fixed;inset:0;background:linear-gradient(#0008,#0004 40%,#000a);z-index:-1}
+svg.i{width:1.15em;height:1.15em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.glass{background:var(--glass);backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%);border:1px solid var(--line);box-shadow:0 8px 30px #0004}
+nav{position:sticky;top:10px;z-index:10;margin:10px auto 0;width:min(560px,calc(100% - 20px));border-radius:22px;padding:8px;display:flex;align-items:center;gap:6px}
+nav .brand{font:800 1.05rem Outfit;display:flex;gap:8px;align-items:center;padding:0 8px;flex:1;white-space:nowrap}
+.btn{font:600 .9rem Manrope;color:var(--txt);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 14px;border-radius:14px;background:rgba(255,255,255,.06);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--line);text-decoration:none;transition:background .2s,transform .1s}
+.btn:hover,.btn.on{background:rgba(255,61,129,.28);border-color:rgba(255,61,129,.6)}
+.btn:active{transform:scale(.97)}
+.btn:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid #fff;outline-offset:2px}
+main{width:min(560px,calc(100% - 20px));margin:0 auto;padding:26px 0 40px}
+.page{display:none}.page.on{display:block}
+h1{font:800 clamp(2.2rem,9vw,3.2rem)/1.05 Outfit;letter-spacing:-.02em;margin:34px 0 12px}
+h1 span{color:var(--pink)}
+.lead{color:var(--mut);line-height:1.6;margin-bottom:22px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{border-radius:18px;padding:16px 8px;text-align:center}
+.stat b{display:block;font:800 1.6rem Outfit}.stat small{color:var(--mut)}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 12px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}.tabs .btn{white-space:nowrap}
+.card{border-radius:24px;padding:18px}
+.card h2{font:700 1.15rem Outfit;display:flex;gap:8px;align-items:center;margin-bottom:14px}
+.card p.d{color:var(--mut);font-size:.88rem;margin-bottom:12px;line-height:1.5}
+input[type=text],textarea{width:100%;padding:13px 14px;border-radius:14px;border:1px solid var(--line);background:rgba(0,0,0,.28);backdrop-filter:blur(8px);color:#fff;font:500 .95rem Manrope;margin-bottom:10px}
+textarea{min-height:130px;resize:vertical;font-family:ui-monospace,Consolas,monospace;font-size:.82rem}
+.row{display:flex;gap:8px}.row .btn{flex:1}
+.go{background:linear-gradient(135deg,#ff3d81cc,#c2185bcc);border-color:#ff7aa8}
+.out{display:none;margin-top:12px;border-radius:16px;padding:12px;background:rgba(0,0,0,.35);border:1px solid var(--line);word-break:break-all;font:.82rem ui-monospace,Consolas,monospace;line-height:1.5;max-height:240px;overflow:auto}
+.out.show{display:block}.out.err{border-color:#ff6b6b;color:#ffb0b0}
+.drop{display:block;text-align:center;padding:26px 10px;border:1.5px dashed var(--line);border-radius:16px;cursor:pointer;margin-bottom:10px;color:var(--mut)}
+.drop input{display:none}.drop .i{width:1.8em;height:1.8em;display:block;margin:0 auto 8px}
+.prev{max-width:100%;max-height:200px;border-radius:14px;margin-bottom:10px;display:none}
+.dev{display:flex;align-items:center;gap:12px;border-radius:18px;padding:14px;margin-bottom:10px;color:#fff;text-decoration:none;transition:background .2s}
+.dev:hover{background:rgba(255,255,255,.14)}
+.dev .logo{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;flex:none}
+.dev .logo svg{width:24px;height:24px;fill:#fff}
+.dev b{display:flex;align-items:center;gap:6px;font-size:1rem}
+.dev small{color:var(--mut)}
+.vb{width:18px;height:18px;flex:none}
+.foot{text-align:center;color:var(--mut);font-size:.8rem;margin-top:26px}
+main{padding-bottom:120px}
+.dock{position:fixed;top:auto;right:auto;height:auto;width:auto;max-width:calc(100% - 20px);margin:0;justify-content:center;align-items:center;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:20;display:flex;gap:4px;padding:8px;border-radius:999px;background:rgba(255,255,255,.07);backdrop-filter:blur(18px) saturate(150%);-webkit-backdrop-filter:blur(18px) saturate(150%);border:1px solid var(--line);box-shadow:0 10px 40px #0007}
+.dock .btn{width:44px;height:44px;padding:0;border-radius:999px;transition:width .3s cubic-bezier(.3,1.4,.5,1),background .2s}
+.dock .btn .i{width:22px;height:22px}
+.dock .btn.on{width:62px;background:rgba(255,61,129,.35)}
+.mp{display:grid;gap:10px}
+.mp .item{border-radius:20px;padding:14px;display:flex;gap:12px;align-items:center}
+.mp .ic{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:rgba(255,61,129,.25);flex:none}
+.mp .inf{flex:1;min-width:0}.mp b{display:block;font:700 1rem Outfit}.mp small{color:var(--mut)}
+.mp .btn{padding:10px 12px}
+.tag{display:inline-block;font:700 .75rem Manrope;padding:3px 9px;border-radius:99px;background:rgba(255,255,255,.12);margin-top:5px}
+.srch{margin-bottom:12px}
+.mp .ic img{width:100%;height:100%;object-fit:cover;border-radius:14px}
+.lbl{display:block;font:700 .85rem Manrope;margin:2px 0 6px}
+.req{color:var(--pink)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<!-- Background video: letakkan file bg.mp4 sefolder dengan index.html -->
+<video id="bg" autoplay muted loop playsinline preload="auto"><source src="bg.mp4" type="video/mp4"></video>
+<div class="shade"></div>
+
+<!-- Ikon web (SVG), bukan emoji keyboard -->
+<svg width="0" height="0" style="position:absolute"><defs>
+<symbol id="home" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10"/></symbol>
+<symbol id="tools" viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.2L3 17.8V21h3.2l6.3-6.3a4 4 0 0 0 5.2-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></symbol>
+<symbol id="user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></symbol>
+<symbol id="link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+<symbol id="globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></symbol>
+<symbol id="code" viewBox="0 0 24 24"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></symbol>
+<symbol id="video" viewBox="0 0 24 24"><rect x="2" y="5" width="14" height="14" rx="3"/><path d="M16 10l6-3v10l-6-3"/></symbol>
+<symbol id="img" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 16l-5-5-9 9"/></symbol>
+<symbol id="lock" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
+<symbol id="up" viewBox="0 0 24 24"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></symbol>
+<symbol id="copy" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="3"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/></symbol>
+<symbol id="open" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+<symbol id="paste" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="3"/><path d="M9 4h6v3H9z"/></symbol>
+<symbol id="arrow" viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></symbol>
+<symbol id="badge" viewBox="0 0 24 24"><path fill="#1d9bf0" stroke="none" d="M22.5 12.5c0-1.6-.9-3-2.3-3.7.4-1.5 0-3.1-1.2-4.2-1.1-1.1-2.7-1.5-4.2-1.2C14 2.1 12.6 1.2 11 1.2S8 2.1 7.2 3.4c-1.5-.4-3.1 0-4.2 1.2C1.900 5.700 1.500 7.300 1.900 8.800.600 9.500-.2 10.900-.2 12.500s.8 3 2.100 3.700c-.4 1.500 0 3.100 1.200 4.200 1.100 1.100 2.700 1.500 4.200 1.200.8 1.300 2.100 2.100 3.700 2.100s3-.8 3.700-2.100c1.500.4 3.100 0 4.200-1.200 1.100-1.100 1.500-2.700 1.200-4.200 1.300-.7 2.100-2.100 2.100-3.700z" transform="translate(1 -.5)"/><path fill="none" stroke="#fff" stroke-width="2.4" d="M7.500 12.300l3 3 6-6.300"/></symbol>
+<symbol id="dl" viewBox="0 0 24 24"><path d="M12 4v12M6 11l6 6 6-6M4 20h16"/></symbol>
+<symbol id="gift" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M5 12v9h14v-9M12 8v13M12 8c-3 0-5-1-5-3s3-2 5 3c2-5 5-5 5-3s-2 3-5 3"/></symbol>
+<symbol id="cart" viewBox="0 0 24 24"><path d="M3 4h3l2.500 11h10L21 7H7"/><circle cx="9" cy="20" r="1.500"/><circle cx="18" cy="20" r="1.500"/></symbol>
+<symbol id="key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3"/></symbol>
+<symbol id="braces" viewBox="0 0 24 24"><path d="M8 4c-3 0-3 2-3 4s0 3-2 4c2 1 2 2 2 4s0 4 3 4M16 4c3 0 3 2 3 4s0 3 2 4c-2 1-2 2-2 4s0 4-3 4"/></symbol>
+<symbol id="hash" viewBox="0 0 24 24"><path d="M5 9h15M4 15h15M10 3L8 21M16 3l-2 18"/></symbol>
+<symbol id="plus" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></symbol>
+</defs></svg>
+
+<nav class="glass">
+  <div class="brand"><svg class="i"><use href="#lock"/></svg>Secretly</div>
+  <button class="btn on" data-page="home"><svg class="i"><use href="#home"/></svg>Home</button>
+  <button class="btn" data-page="tools"><svg class="i"><use href="#tools"/></svg>Tools</button>
+  <button class="btn" data-page="dev"><svg class="i"><use href="#user"/></svg>Kontak</button>
+</nav>
+
+<main>
+<!-- HOME -->
+<section class="page on" id="home">
+  <h1>Secretly <span>Tools</span></h1>
+  <p class="lead">Kumpulan tools gratis untuk melewati tautan, mengobfuscate Lua, dan mengubah video atau foto menjadi link. Semua dalam satu halaman, ringan dipakai di HP.</p>
+  <div class="stats">
+    <div class="stat glass"><b>10</b><small>Tools</small></div>
+    <div class="stat glass"><b>3</b><small>Kontak</small></div>
+    <div class="stat glass"><b>Free</b><small>Selamanya</small></div>
+  </div>
+  <p style="margin-top:18px"><button class="btn go" data-page="tools"><svg class="i"><use href="#tools"/></svg>Buka Tools</button></p>
+</section>
+
+<!-- TOOLS -->
+<section class="page" id="tools">
+  <div class="tabs" id="tabs">
+    <button class="btn on" data-t="t-bypass"><svg class="i"><use href="#link"/></svg>Bypass Link</button>
+    <button class="btn" data-t="t-web"><svg class="i"><use href="#globe"/></svg>Bypass Web</button>
+    <button class="btn" data-t="t-obf"><svg class="i"><use href="#code"/></svg>Obfuscate</button>
+    <button class="btn" data-t="t-vid"><svg class="i"><use href="#video"/></svg>Video ke Link</button>
+    <button class="btn" data-t="t-img"><svg class="i"><use href="#img"/></svg>Foto ke Link</button>
+    <button class="btn" data-t="t-b64"><svg class="i"><use href="#lock"/></svg>Base64</button>
+    <button class="btn" data-t="t-json"><svg class="i"><use href="#braces"/></svg>JSON</button>
+    <button class="btn" data-t="t-pw"><svg class="i"><use href="#key"/></svg>Password</button>
+    <button class="btn" data-t="t-sha"><svg class="i"><use href="#hash"/></svg>SHA-256</button>
+    <button class="btn" data-t="t-url"><svg class="i"><use href="#link"/></svg>URL Encode</button>
+  </div>
+
+  <div class="card glass tool on" id="t-bypass">
+    <h2><svg class="i"><use href="#link"/></svg>Bypass Link</h2>
+    <p class="d">Mendukung bicolink, sfile, sfl.gl, sub4unlock dan sejenisnya.</p>
+    <input type="text" id="b-in" placeholder="Tempel tautan (bicolink / sfile / sfl.gl)" autocomplete="off">
+    <div class="row"><button class="btn" onclick="paste('b-in')" aria-label="Tempel"><svg class="i"><use href="#paste"/></svg></button>
+    <button class="btn go" style="flex:5" onclick="bypass('b-in','b-out')"><svg class="i"><use href="#arrow"/></svg>Proses tautan</button></div>
+    <div class="out" id="b-out"></div>
+  </div>
+
+  <div class="card glass tool" id="t-web" hidden>
+    <h2><svg class="i"><use href="#globe"/></svg>Bypass Web</h2>
+    <p class="d">Untuk halaman yang menahan tautan di balik timer atau pengalihan.</p>
+    <input type="text" id="w-in" placeholder="https://contoh-website.com/halaman" autocomplete="off">
+    <div class="row"><button class="btn" onclick="paste('w-in')" aria-label="Tempel"><svg class="i"><use href="#paste"/></svg></button>
+    <button class="btn go" style="flex:5" onclick="bypass('w-in','w-out')"><svg class="i"><use href="#arrow"/></svg>Proses website</button></div>
+    <div class="out" id="w-out"></div>
+  </div>
+
+  <div class="card glass tool" id="t-obf" hidden>
+    <h2><svg class="i"><use href="#code"/></svg>Obfuscate Lua</h2>
+    <p class="d">Mengubah kode Lua menjadi loader yang sulit dibaca. Berjalan di browser kamu.</p>
+    <textarea id="o-in" placeholder="print('Halo dunia')"></textarea>
+    <button class="btn go" style="width:100%" onclick="obf()"><svg class="i"><use href="#lock"/></svg>Obfuscate</button>
+    <div class="out" id="o-out"></div>
+  </div>
+
+  <div class="card glass tool" id="t-vid" hidden>
+    <h2><svg class="i"><use href="#video"/></svg>Video ke Link</h2>
+    <label class="drop"><svg class="i"><use href="#up"/></svg><span id="v-name">Pilih video (maks 100 MB)</span><input type="file" id="v-f" accept="video/*"></label>
+    <button class="btn go" style="width:100%" onclick="upload('v-f','v-out')"><svg class="i"><use href="#up"/></svg>Upload dan buat link</button>
+    <div class="out" id="v-out"></div>
+  </div>
+
+  <div class="card glass tool" id="t-img" hidden>
+    <h2><svg class="i"><use href="#img"/></svg>Foto ke Link</h2>
+    <label class="drop"><svg class="i"><use href="#up"/></svg><span id="i-name">Pilih foto (maks 100 MB)</span><input type="file" id="i-f" accept="image/*"></label>
+    <img class="prev" id="i-prev" alt="Pratinjau foto">
+    <button class="btn go" style="width:100%" onclick="upload('i-f','i-out')"><svg class="i"><use href="#up"/></svg>Upload dan buat link</button>
+    <div class="out" id="i-out"></div>
+  </div>
+
+  <div class="card glass tool" id="t-b64" hidden>
+    <h2><svg class="i"><use href="#lock"/></svg>Base64</h2>
+    <textarea id="x-in" placeholder="Teks atau string Base64"></textarea>
+    <div class="row"><button class="btn go" onclick="b64(1)">Encode</button><button class="btn go" onclick="b64(0)">Decode</button></div>
+    <div class="out" id="x-out"></div>
+  </div>
+
+  <div class="card glass tool" id="t-url" hidden>
+    <h2><svg class="i"><use href="#link"/></svg>URL Encode</h2>
+    <textarea id="u-in" placeholder="Teks atau URL"></textarea>
+    <div class="row"><button class="btn go" onclick="urlc(1)">Encode</button><button class="btn go" onclick="urlc(0)">Decode</button></div>
+    <div class="out" id="u-out"></div>
+  </div>
+
+  <div class="card glass tool" id="t-json" hidden>
+    <h2><svg class="i"><use href="#braces"/></svg>JSON Formatter</h2>
+    <textarea id="j-in" placeholder='{"nama":"Secretly"}'></textarea>
+    <div class="row"><button class="btn go" onclick="json(1)">Rapikan</button><button class="btn go" onclick="json(0)">Minify</button></div>
+    <div class="out" id="j-out"></div>
+  </div>
+
+  <div class="card glass tool" id="t-pw" hidden>
+    <h2><svg class="i"><use href="#key"/></svg>Password Generator</h2>
+    <input type="text" id="p-len" value="16" inputmode="numeric" placeholder="Panjang (8-64)">
+    <button class="btn go" style="width:100%" onclick="pw()"><svg class="i"><use href="#key"/></svg>Buat password</button>
+    <div class="out" id="p-out"></div>
+  </div>
+
+  <div class="card glass tool" id="t-sha" hidden>
+    <h2><svg class="i"><use href="#hash"/></svg>SHA-256</h2>
+    <textarea id="h-in" placeholder="Teks yang mau di-hash"></textarea>
+    <button class="btn go" style="width:100%" onclick="sha()"><svg class="i"><use href="#hash"/></svg>Buat hash</button>
+    <div class="out" id="h-out"></div>
+  </div>
+</section>
+
+<!-- KONTAK DEVELOPER -->
+<section class="page" id="dev">
+  <h1>Kontak <span>Developer</span></h1>
+  <p class="lead">Ada pertanyaan, bug, atau ide tools baru? Hubungi lewat salah satu kanal ini.</p>
+
+  <a class="dev glass" href="https://youtube.com/@Jefri" target="_blank" rel="noopener">
+    <span class="logo" style="background:#ff0000"><svg viewBox="0 0 24 24"><path d="M23.5 6.500a3 3 0 0 0-2.100-2.100C19.500 3.900 12 3.900 12 3.900s-7.500 0-9.400.5A3 3 0 0 0 .5 6.500C0 8.400 0 12 0 12s0 3.600.5 5.500a3 3 0 0 0 2.100 2.100c1.900.5 9.400.5 9.400.5s7.500 0 9.400-.5a3 3 0 0 0 2.100-2.100c.5-1.900.5-5.500.5-5.500s0-3.600-.5-5.500zM9.600 15.600V8.400l6.200 3.600z"/></svg></span>
+    <span><b>YouTube <svg class="vb"><use href="#badge"/></svg></b><small>@Jefri</small></span>
+  </a>
+
+  <a class="dev glass" href="https://tiktok.com/@sevcrett" target="_blank" rel="noopener">
+    <span class="logo" style="background:#000;border:1px solid var(--line)"><svg viewBox="0 0 24 24"><path d="M19.600 6.800a5.200 5.200 0 0 1-3.100-1.100 5.100 5.100 0 0 1-1.900-3.200h-3.300v13.100a2.800 2.800 0 1 1-2-2.700V9.600a6.200 6.200 0 1 0 5.300 6.100V9.100a8.400 8.400 0 0 0 5 1.600z"/></svg></span>
+    <span><b>TikTok <svg class="vb"><use href="#badge"/></svg></b><small>@sevcrett</small></span>
+  </a>
+
+  <a class="dev glass" href="https://wa.me/6287834270844" target="_blank" rel="noopener">
+    <span class="logo" style="background:#25d366"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.600 15L2 22l5.200-1.400A10 10 0 1 0 12 2zm5.800 14.200c-.2.700-1.400 1.300-2 1.400-.5.100-1.200.1-1.900-.1-.4-.1-1-.3-1.700-.6-3-1.300-5-4.300-5.100-4.500-.1-.2-1.200-1.600-1.200-3s.8-2.100 1-2.400c.3-.3.600-.3.800-.3h.6c.2 0 .5-.1.700.5l1 2.400c.1.200.1.400 0 .6l-.4.600c-.2.200-.3.400-.1.700.2.300.7 1.200 1.500 1.900 1 .9 1.900 1.200 2.200 1.300.3.200.5.100.7-.1l.9-1.100c.2-.3.400-.2.700-.1l2.200 1c.3.200.5.200.5.400.1.100.1.700-.1 1.400z"/></svg></span>
+    <span><b>WhatsApp <svg class="vb"><use href="#badge"/></svg></b><small>+62 878-3427-0844</small></span>
+  </a>
+</section>
+
+<!-- MODPACK FREE -->
+<section class="page" id="modfree">
+  <h1>Modpack <span>Free</span></h1>
+  <p class="lead">Modpack gratis, tinggal unduh. Daftar bisa diubah di array MOD_FREE pada script.</p>
+  <input type="text" class="srch" id="mf-q" placeholder="Cari modpack" autocomplete="off">
+  <div class="mp" id="mf-list"></div>
+</section>
+
+<!-- SHARE MODPACK -->
+<section class="page" id="share">
+  <h1>Share <span>Modpack</span></h1>
+  <p class="lead">Isi semua kolom, lalu modpack langsung tampil di menu Modpack Free.</p>
+  <div class="card glass">
+    <label class="lbl" for="s-n">Nama Modpack <span class="req">*</span></label>
+    <input type="text" id="s-n" maxlength="60" placeholder="Contoh: Modpack Style Santai" autocomplete="off">
+    <label class="lbl" for="s-t">Jenis File <span class="req">*</span></label>
+    <input type="text" id="s-t" maxlength="20" list="s-types" placeholder="ZIP / RAR / 7Z / APK" autocomplete="off">
+    <datalist id="s-types"><option value="ZIP"><option value="RAR"><option value="7Z"><option value="APK"></datalist>
+    <label class="lbl" for="s-l">Link Modpack <span class="req">*</span></label>
+    <input type="text" id="s-l" placeholder="https://www.mediafire.com/..." autocomplete="off" inputmode="url">
+    <label class="lbl" for="s-c">Credits <span class="req">*</span></label>
+    <input type="text" id="s-c" maxlength="40" placeholder="Nama pembuat" autocomplete="off">
+    <span class="lbl">Foto <span class="req">*</span></span>
+    <label class="drop"><svg class="i"><use href="#img"/></svg><span id="s-name">Pilih foto modpack</span><input type="file" id="s-f" accept="image/*"></label>
+    <img class="prev" id="s-prev" alt="Pratinjau foto">
+    <button class="btn go" style="width:100%" onclick="shareMod()"><svg class="i"><use href="#plus"/></svg>Kirim modpack</button>
+    <div class="out" id="s-out"></div>
+  </div>
+</section>
+
+<!-- FORSELL MODPACK -->
+<section class="page" id="modsell">
+  <h1>Forsell <span>Modpack</span></h1>
+  <p class="lead">Modpack premium. Tekan tombol keranjang untuk memesan langsung lewat WhatsApp.</p>
+  <input type="text" class="srch" id="ms-q" placeholder="Cari modpack" autocomplete="off">
+  <div class="mp" id="ms-list"></div>
+</section>
+
+<p class="foot">&copy; Secretly</p>
+</main>
+
+<nav class="dock" aria-label="Menu bawah">
+  <button class="btn on" data-page="home" aria-label="Home" title="Home"><svg class="i"><use href="#home"/></svg></button>
+  <button class="btn" data-page="tools" aria-label="Tools" title="Tools"><svg class="i"><use href="#tools"/></svg></button>
+  <button class="btn" data-page="modfree" aria-label="Modpack Free" title="Modpack Free"><svg class="i"><use href="#gift"/></svg></button>
+  <button class="btn" data-page="share" aria-label="Share Modpack" title="Share Modpack"><svg class="i"><use href="#plus"/></svg></button>
+  <button class="btn" data-page="modsell" aria-label="Forsell Modpack" title="Forsell Modpack"><svg class="i"><use href="#cart"/></svg></button>
+  <button class="btn" data-page="dev" aria-label="Kontak" title="Kontak"><svg class="i"><use href="#user"/></svg></button>
+</nav>
+
+<script>
+/* ====== KONFIGURASI ======
+   Ganti dengan endpoint API kamu sendiri. */
+const API_BYPASS = "https://GANTI-API-KAMU.com/bypass?url=";   // balasan JSON: {result|url|data|link}
+const API_UPLOAD = "https://tmpfiles.org/api/v1/upload";        // balasan: {data:{url}}
+
+const $ = id => document.getElementById(id);
+const show = (id, txt, err, link) => {
+  const o = $(id); o.className = "out show" + (err ? " err" : ""); o.innerHTML = "";
+  const s = document.createElement("div"); s.textContent = txt; o.appendChild(s);
+  if (link && !err) {
+    const r = document.createElement("div"); r.className = "row"; r.style.marginTop = "10px";
+    r.innerHTML = '<button class="btn"><svg class="i"><use href="#copy"/></svg>Copy</button><a class="btn go" target="_blank" rel="noopener"><svg class="i"><use href="#open"/></svg>Buka</a>';
+    r.firstChild.onclick = () => { navigator.clipboard.writeText(txt); r.firstChild.lastChild.textContent = "Tersalin"; };
+    if (/^https?:\/\//.test(txt)) r.lastChild.href = txt; else r.lastChild.style.display = "none";
+    o.appendChild(r);
+  }
+};
+
+/* Navigasi halaman */
+document.querySelectorAll("[data-page]").forEach(b => b.onclick = () => {
+  document.querySelectorAll(".page").forEach(p => p.classList.toggle("on", p.id === b.dataset.page));
+  document.querySelectorAll("nav [data-page]").forEach(n => n.classList.toggle("on", n.dataset.page === b.dataset.page));
+  scrollTo({top: 0});
+});
+/* Tab tools */
+document.querySelectorAll("#tabs [data-t]").forEach(b => b.onclick = () => {
+  document.querySelectorAll("#tabs .btn").forEach(x => x.classList.toggle("on", x === b));
+  document.querySelectorAll(".tool").forEach(t => t.hidden = t.id !== b.dataset.t);
+});
+
+async function paste(id){ try{ $(id).value = await navigator.clipboard.readText(); }catch(e){ $(id).focus(); } }
+
+/* Bypass */
+async function bypass(inp, out){
+  const u = $(inp).value.trim();
+  if(!/^https?:\/\//i.test(u)) return show(out, "Masukkan tautan yang diawali http:// atau https://", true);
+  if(API_BYPASS.includes("GANTI-API")) return show(out, "API bypass belum diatur. Isi API_BYPASS di bagian script index.html.", true);
+  show(out, "Memproses...");
+  try{
+    const r = await fetch(API_BYPASS + encodeURIComponent(u));
+    const j = await r.json();
+    const res = j.result || j.url || j.data || j.link || j.destination;
+    if(!res) throw new Error("Hasil kosong");
+    show(out, typeof res === "string" ? res : JSON.stringify(res), false, true);
+  }catch(e){ show(out, "Bypass gagal: " + e.message, true); }
+}
+
+/* Obfuscate Lua (di browser) */
+function obf(){
+  const src = $("o-in").value;
+  if(!src.trim()) return show("o-out", "Tempel kode Lua dulu.", true);
+  const key = Math.floor(Math.random()*200)+30, bytes = [];
+  for(const b of new TextEncoder().encode(src)) bytes.push((b ^ key) & 255);
+  const n = "_" + Math.random().toString(36).slice(2,8);
+  const lua = `local ${n}={${bytes.join(",")}}local _k=${key}local _s={}for _i=1,#${n} do _s[_i]=string.char(bit32 and bit32.bxor(${n}[_i],_k) or ((${n}[_i]|_k)-(${n}[_i]&_k)))end;local _f=(loadstring or load)(table.concat(_s));return _f()`;
+  show("o-out", lua, false, true);
+}
+
+/* Upload video / foto */
+$("v-f").onchange = e => $("v-name").textContent = e.target.files[0]?.name || "Pilih video (maks 100 MB)";
+$("i-f").onchange = e => { const f = e.target.files[0]; if(!f) return;
+  $("i-name").textContent = f.name; const p = $("i-prev"); p.src = URL.createObjectURL(f); p.style.display = "block"; };
+async function upload(fid, out){
+  const f = $(fid).files[0];
+  if(!f) return show(out, "Pilih file dulu.", true);
+  if(f.size > 100*1024*1024) return show(out, "Ukuran file melebihi 100 MB.", true);
+  show(out, "Mengunggah...");
+  try{
+    const fd = new FormData(); fd.append("file", f);
+    const r = await fetch(API_UPLOAD, {method:"POST", body: fd});
+    const j = await r.json();
+    let url = j.data?.url || j.url; if(!url) throw new Error("Server tidak mengembalikan link");
+    url = url.replace("tmpfiles.org/", "tmpfiles.org/dl/").replace("/dl/dl/", "/dl/");
+    show(out, url, false, true);
+  }catch(e){ show(out, "Upload gagal: " + e.message, true); }
+}
+
+/* Modpack: edit data di sini */
+const WA = "6287834270844";
+const MOD_FREE = [
+  {n:"Modpack Contoh 1", d:"Deskripsi singkat modpack", s:"25 MB", u:"#"},
+  {n:"Modpack Contoh 2", d:"Deskripsi singkat modpack", s:"48 MB", u:"#"},
+  {n:"Modpack Contoh 3", d:"Deskripsi singkat modpack", s:"12 MB", u:"#"}
+];
+const MOD_SELL = [
+  {n:"Modpack Buat Repe/Robber", d:"Android", p:"Rp 10.000"},
+  {n:"Modpack Buat Roleplay Santai", d:"Android", p:"Rp 5.000"},
+  {n:"Modpack Compe Sotot Rp", d:"Android", p:"Rp 7.000"},
+  {n:"Modpack TCW Habis", d:"Android", p:"Rp 3.000"},
+  {n:"Modpack Style Gonzela", d:"Android", p:"Rp 3.000"},
+  {n:"Modpack Cv Little Batley", d:"Android", p:"Rp 3.000"}
+];
+/* Modpack hasil share: disimpan di browser (localStorage) */
+const SHARE_KEY = "secretly_shared_mods";
+let SHARED = [];
+try{ SHARED = JSON.parse(localStorage.getItem(SHARE_KEY) || "[]"); }catch(e){}
+const allFree = () => [...SHARED, ...MOD_FREE];
+
+function card(m, sell){
+  const el = document.createElement("div"); el.className = "item glass";
+  const ic = document.createElement("div"); ic.className = "ic";
+  if(m.img && /^data:image\//.test(m.img)){ const im = document.createElement("img"); im.src = m.img; im.alt = m.n; ic.appendChild(im); }
+  else ic.innerHTML = '<svg class="i"><use href="#' + (sell ? "cart" : "gift") + '"/></svg>';
+  const inf = document.createElement("div"); inf.className = "inf";
+  const b = document.createElement("b"); b.textContent = m.n;
+  const sm = document.createElement("small"); sm.textContent = m.d;
+  const tg = document.createElement("span"); tg.className = "tag"; tg.textContent = sell ? m.p : m.s;
+  inf.append(b, sm, document.createElement("br"), tg);
+  const a = document.createElement("a"); a.className = "btn go"; a.target = "_blank"; a.rel = "noopener";
+  a.setAttribute("aria-label", sell ? "Beli " + m.n : "Unduh " + m.n);
+  a.href = sell ? "https://wa.me/" + WA + "?text=" + encodeURIComponent("Halo, saya mau beli " + m.n + " (" + m.p + ")") : m.u;
+  a.innerHTML = '<svg class="i"><use href="#' + (sell ? "cart" : "dl") + '"/></svg>';
+  el.append(ic, inf, a); return el;
+}
+function renderMods(list, data, q, sell){
+  const box = $(list); box.innerHTML = "";
+  const r = data.filter(m => m.n.toLowerCase().includes(q.toLowerCase()));
+  if(!r.length){ const e = document.createElement("p"); e.className = "lead"; e.textContent = "Modpack tidak ditemukan."; box.appendChild(e); }
+  r.forEach(m => box.appendChild(card(m, sell)));
+}
+$("mf-q").oninput = e => renderMods("mf-list", allFree(), e.target.value, false);
+$("ms-q").oninput = e => renderMods("ms-list", MOD_SELL, e.target.value, true);
+renderMods("mf-list", allFree(), "", false); renderMods("ms-list", MOD_SELL, "", true);
+
+$("s-f").onchange = e => { const f = e.target.files[0]; if(!f) return;
+  $("s-name").textContent = f.name; const p = $("s-prev"); p.src = URL.createObjectURL(f); p.style.display = "block"; };
+function shrink(file){ return new Promise((ok, no) => {
+  const im = new Image(); im.onload = () => { const k = Math.min(1, 320 / Math.max(im.width, im.height));
+    const c = document.createElement("canvas"); c.width = Math.round(im.width * k); c.height = Math.round(im.height * k);
+    c.getContext("2d").drawImage(im, 0, 0, c.width, c.height); ok(c.toDataURL("image/jpeg", .78)); };
+  im.onerror = () => no(new Error("Foto tidak bisa dibaca")); im.src = URL.createObjectURL(file); }); }
+async function shareMod(){
+  const n = $("s-n").value.trim(), t = $("s-t").value.trim(), l = $("s-l").value.trim(), c = $("s-c").value.trim(), f = $("s-f").files[0];
+  if(!n || !t || !l || !c || !f) return show("s-out", "Semua kolom wajib diisi: nama, jenis file, link, credits, dan foto.", true);
+  if(!/^https?:\/\//i.test(l)) return show("s-out", "Link harus diawali http:// atau https://", true);
+  try{
+    const img = await shrink(f);
+    SHARED.unshift({n, d: "Credits: " + c, s: t.toUpperCase(), u: l, img});
+    try{ localStorage.setItem(SHARE_KEY, JSON.stringify(SHARED)); }catch(e){}
+    renderMods("mf-list", allFree(), "", false);
+    ["s-n","s-t","s-l","s-c","s-f"].forEach(i => $(i).value = "");
+    $("s-name").textContent = "Pilih foto modpack"; $("s-prev").style.display = "none"; $("s-out").className = "out";
+    document.querySelector('.dock [data-page="modfree"]').click();
+  }catch(e){ show("s-out", "Gagal: " + e.message, true); }
+}
+
+/* Tools tambahan */
+function json(pretty){ try{ const o = JSON.parse($("j-in").value); show("j-out", pretty ? JSON.stringify(o, null, 2) : JSON.stringify(o), false, true); }
+  catch(e){ show("j-out", "JSON tidak valid: " + e.message, true); } }
+function pw(){ const n = Math.min(64, Math.max(8, parseInt($("p-len").value) || 16));
+  const c = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%^&*";
+  const r = crypto.getRandomValues(new Uint32Array(n)); show("p-out", Array.from(r, x => c[x % c.length]).join(""), false, true); }
+async function sha(){ const v = $("h-in").value; if(!v) return show("h-out", "Isi teks dulu.", true);
+  const h = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(v));
+  show("h-out", Array.from(new Uint8Array(h), b => b.toString(16).padStart(2, "0")).join(""), false, true); }
+
+/* Base64 dan URL */
+function b64(enc){ const v = $("x-in").value;
+  try{ show("x-out", enc ? btoa(String.fromCharCode(...new TextEncoder().encode(v))) : new TextDecoder().decode(Uint8Array.from(atob(v.trim()), c => c.charCodeAt(0))), false, true); }
+  catch(e){ show("x-out", "Input tidak valid.", true); } }
+function urlc(enc){ const v = $("u-in").value;
+  try{ show("u-out", enc ? encodeURIComponent(v) : decodeURIComponent(v), false, true); }
+  catch(e){ show("u-out", "Input tidak valid.", true); } }
+</script>
+</body>
+</html>
